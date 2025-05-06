@@ -214,3 +214,44 @@ def quadgraph(M1, M2 = None, M1_title = 'Initialization', M2_title = 'Optimized'
         plt.suptitle(title)
     plt.tight_layout()
     plt.show()
+
+def pointshift_heatmap(M, i, res):
+    #generates a heatmap of the L2 value as a designated point is moved around the unit square
+    
+    #M is the matrix containing the points
+    #i in [0, n-1] is the index of the point that will be shifted
+    #res is the resolution, the number of pixels is res squared
+    def L2_sub(A, p, vals):
+        A_copy = np.array(A)
+        A_copy[0, p] = vals[0]
+        A_copy[1, p] = vals[1]
+        return L2(A_copy)
+    
+    heatmap_data = np.zeros([res, res])
+    
+    base_val = L2(M)
+    
+    Xs = np.linspace(0, 1, res)
+    Ys = np.linspace(0, 1, res)
+    
+    current_min = base_val
+    current_argmin = np.array(M[:, i])
+    for r in range(res):
+        for t in range(res):
+            current_val = L2_sub(M, i, np.array([r/res, t/res]))
+            heatmap_data[r, t] = np.sqrt(current_val) - np.sqrt(base_val)
+            if current_val < current_min:
+                current_min = current_val
+                current_argmin = np.array([r/res, t/res])
+
+    cs = plt.contourf(Xs, Ys, heatmap_data.T, 40)
+    #The transpose is because contourf flips the axes for some reason
+    plt.colorbar(cs)
+    plt.scatter(M[0, :], M[1, :], color = 'blue', label = "Immobile Set")
+    plt.scatter(M[0, i], M[1, i], color = 'red', label = "Current Location")
+    plt.scatter(current_argmin[0], current_argmin[1], color = 'yellow', label = 'Approximate Optimum')
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='lower center')
+    plt.tight_layout()
+    plt.axis('equal')
+    plt.title('n = ' + str(len(M[0, :])) + ", Start Value = " +  str(round(np.sqrt(base_val), 6)) + ' Move Opt Value = ' + str(round(np.sqrt(current_min), 6)))
+    plt.show()
