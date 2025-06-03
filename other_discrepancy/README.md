@@ -1,1 +1,1 @@
-This folder contains point sets and code related to the "Other Discrepancy" section of our paper. It will provide code for compute original and smoothed version of periodic, general and extreme L_2 discrepancy. 
+This folder contains point sets and code related to the "Other Discrepancy" section of our paper. It will provide code for computing original and smoothed version of periodic, general and extreme L_2 discrepancy. 
