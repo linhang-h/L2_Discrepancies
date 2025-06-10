@@ -35,11 +35,18 @@ def getKronecker(n, phi, placehold = 0, startwith = 0):
 
 
 # Fibonacci initilization in any dim
-def getFibonacci(n, d=5, placehold=0):
+def getFibonacci(n, d, placehold=0):
     phi_base = (jnp.sqrt(5) - 1) / 2
     # Use inverse powers of the golden ratio to ensure irrationality and avoid 0
     phis = jnp.array([1 / phi_base**j for j in range(1, d)])  # d-1 values
     return getKronecker(n, phi=phis, placehold=placehold)
+
+# determintic sobol in any dim
+def sobol_nd_deterministic(n, d=5):
+    m = int(np.ceil(np.log2(n)))  # Number of points must be a power of 2
+    sampler = qmc.Sobol(d=d, scramble=False)  # scramble=False → fully deterministic
+    points = sampler.random_base2(m=m)
+    return points[:n]
 
 # determinitic Halton (not scrambled) in any dim
 def getHalton(n, d):
